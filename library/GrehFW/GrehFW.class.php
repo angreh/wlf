@@ -40,7 +40,7 @@ class GrehFW {
             'BD_HOST' => 'localhost',
             'BD_USER' => 'root',
             'BD_PASS' => '',
-            'BD_DB' => 'betopreah_agenda',
+            'BD_DB' => 'welovefe_default',
             'BD_CHARSET' => 'utf8'
         );
         $helper->Database()->setConfig($db_config);

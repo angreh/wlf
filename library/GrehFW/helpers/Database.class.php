@@ -1,4 +1,4 @@
-<?
+<?php
 
 /**
  * Responsável por todo acesso ao bando de dados e execução de suas funções
@@ -85,7 +85,7 @@ class Database {
         if ($this->host == null) {
             throw new Exception('Banco de dados não configurado!');
         }
-        $this->_con = mysql_connect($this->host, $this->user, $this->pass);
+        @ $this->_con = mysql_connect($this->host, $this->user, $this->pass);
         if ($this->_con && mysql_select_db($this->bd_db, $this->_con)) {
             mysql_query("SET character_set_results = '" . $this->charset . "', character_set_client = '" . $this->charset . "', character_set_connection = '" . $this->charset . "', character_set_database = '" . $this->charset . "', character_set_server = '" . $this->charset . "'", $this->_con);
             return true;
