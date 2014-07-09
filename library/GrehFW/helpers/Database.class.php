@@ -1,4 +1,4 @@
-<?php
+<?
 
 /**
  * Responsável por todo acesso ao bando de dados e execução de suas funções
@@ -63,15 +63,21 @@ class Database {
      * bem como o tipo de codificação que será usado
      * @param array $config
      */
-    public function setConfig($config) {
-        try {
-            $this->host = $config['BD_HOST'];
-            $this->user = $config['BD_USER'];
-            $this->pass = $config['BD_PASS'];
-            $this->bd_db = $config['BD_DB'];
-            $this->charset = $config['BD_CHARSET'];
-        } catch (Exception $exc) {
-            echo $exc->getTraceAsString('Configuração inválida!');
+    public function init() {
+        $filename = SYSTEM_PATH . 'configs/db.php';
+        if (file_exists($filename)) {
+            include $filename;
+            try {
+                $this->host = $db_config['BD_HOST'];
+                $this->user = $db_config['BD_USER'];
+                $this->pass = $db_config['BD_PASS'];
+                $this->bd_db = $db_config['BD_DB'];
+                $this->charset = $db_config['BD_CHARSET'];
+            } catch (Exception $exc) {
+                echo $exc->getTraceAsString('Configuração inválida!');
+            }
+        } else {
+            exit(var_dump("Crie o arquivo de configuração do banco de dados ($filename)"));
         }
     }
 
@@ -85,7 +91,7 @@ class Database {
         if ($this->host == null) {
             throw new Exception('Banco de dados não configurado!');
         }
-        @ $this->_con = mysql_connect($this->host, $this->user, $this->pass);
+        $this->_con = mysql_connect($this->host, $this->user, $this->pass);
         if ($this->_con && mysql_select_db($this->bd_db, $this->_con)) {
             mysql_query("SET character_set_results = '" . $this->charset . "', character_set_client = '" . $this->charset . "', character_set_connection = '" . $this->charset . "', character_set_database = '" . $this->charset . "', character_set_server = '" . $this->charset . "'", $this->_con);
             return true;
@@ -410,11 +416,11 @@ class Database {
             exit($options->sql);
         }
 
-        if ($options->connect){
+        if ($options->connect) {
             $this->connect();
         }
         $result = mysql_query($options->sql, $this->_con);
-        if ($options->connect){
+        if ($options->connect) {
             $this->close();
         }
         return $result;

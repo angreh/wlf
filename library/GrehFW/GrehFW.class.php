@@ -34,25 +34,9 @@ class GrehFW {
         $helper->AutoLoader()->register();
 
         /**
-         * Configura o banco de dados
+         * Inicializa as configurações do banco de dados
          */
-        $db_config = array(
-            'BD_HOST' => 'localhost',
-            'BD_USER' => 'root',
-            'BD_PASS' => '',
-            'BD_DB' => 'welovefe_default',
-            'BD_CHARSET' => 'utf8'
-        );
-        $helper->Database()->setConfig($db_config);
-
-        /**
-         * Configura rotas de endereços
-         */
-        $routes = array(
-            'release' => 'site/home/release',
-            'fotos' => 'site/home/fotos',
-            'contato' => 'site/home/contato',
-        );
+        $helper->Database()->init();
 
         /**
          * Inicializa o Request
@@ -60,7 +44,7 @@ class GrehFW {
          * A classe request é responsável pelos nomes do modules, controllers,
          * actions, seus caminhos e os paramentros passados através dos endereços
          */
-        $helper->Request()->init(array('routes' => $routes));
+        $helper->Request()->init();
 
 
         // Instancia o controller e chama actions definidas pelo request

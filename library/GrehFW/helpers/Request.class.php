@@ -81,17 +81,18 @@ class Request {
         $default = array(
             'defaultModule' => 'site',
             'defaultController' => 'home',
-            'defaultAction' => 'index',
-            'routes' => FALSE
+            'defaultAction' => 'index'
         );
 
         $options = (object) array_merge($default, $options);
-        
-        if($options->routes !== FALSE){
-            $this->routes = $options->routes;
+
+        $filename = SYSTEM_PATH . 'configs/routes.php';
+        if (file_exists($filename)) {
+            include $filename;
+            $this->routes = $routes;
         }
 
-        //Remove a primeira '/' do request
+//Remove a primeira '/' do request
         $request = substr($_SERVER['REQUEST_URI'], 1);
         if (isset($this->routes[$request])) {
             $this->resquest = $this->routes[$request];
@@ -99,27 +100,27 @@ class Request {
             $this->resquest = (string) $request;
         }
 
-        //trasnforma em array
+//trasnforma em array
         $request = explode('/', $this->resquest);
 
-        //Define modulo
+//Define modulo
         if (isset($request[0]) && $request[0] != '') {
             $this->module = $request[0];
         } else {
             $this->module = strtolower($options->defaultModule);
         }
 
-        //define controller
+//define controller
         if (isset($request[1])) {
             $this->controller = $request[1];
         } else {
             $this->controller = strtolower($options->defaultController);
         }
 
-        //define o nome da classe do controller
+//define o nome da classe do controller
         $this->controllerClassName = str_replace(' ', '', ucwords(str_replace('_', ' ', $this->controller))) . '_' . ucfirst($this->module) . '_Controller';
 
-        //define action
+//define action
         if (isset($request[2])) {
             if (strpos($request[2], '_') === false) {
                 $this->action = $request[2];
@@ -136,12 +137,12 @@ class Request {
             $this->action = strtolower($options->defaultAction);
         }
 
-        //define variáveis
+//define variáveis
         $requestParamsCount = count($request);
         if ($requestParamsCount > 4) {
             $vars = array_slice($request, 3);
             foreach ($vars as $key => $value) {
-                //se for par salva a chave e se for impar atribui o valor a chave previamente definida 
+//se for par salva a chave e se for impar atribui o valor a chave previamente definida 
                 if (!( $key & 1 )) {
                     $auxKey = $value;
                 } else {

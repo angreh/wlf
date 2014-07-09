@@ -23,6 +23,18 @@ abstract class DefaultController {
     protected $tpl;
 
     /**
+     *
+     * @var type 
+     */
+    protected $tdr;
+
+    /**
+     * Classe 
+     * @var DefaultMapper
+     */
+    protected $mapper;
+
+    /**
      * Flag que diz se o template vai ser carregado
      * @var boolean 
      */
@@ -40,7 +52,9 @@ abstract class DefaultController {
      * @param Helpers $helper
      */
     public function __construct($helper = NULL) {
-        $this->helper = $helper;
+        if ($helper != NULL) {
+            $this->helper = $helper;
+        }
         $this->init();
     }
 
@@ -103,7 +117,7 @@ abstract class DefaultController {
                 //$this->inView();
                 //$this->helper->Plugins()->inView();
             } else {
-                throw new Exception('Não foi possível carrecar a View. (' . $view_template . ')');
+                exit(var_dump('Não foi possível carrecar a View. (' . $view_template . ')'));
             }
         } else {
             throw new Exception('Não foi possível carregar o Layout. (' . $template . ')');
@@ -118,14 +132,28 @@ abstract class DefaultController {
     public function disableLayout() {
         $this->tplLayout = false;
     }
-    
-    public function setLayout($layout){
+
+    public function setLayout($layout) {
         $this->tplLayout = $layout;
     }
 
-        protected function redirect($url = '') {
+    protected function redirect($url = '') {
         header('Location: ' . BASE_URL . $url);
         exit;
+    }
+
+    protected function gettext($text) {
+        $textAux = str_replace(' ', '_', $text);
+        $filename = SYSTEM_PATH . 'configs/langs/'. $this->helper->Request()->getModule() .'/' . LANGUAGE . '.xml';
+        if (file_exists($filename)) {
+            $xml = simplexml_load_file($filename);
+            $opa = $xml->xpath('/resources/string[@name="' . $textAux . '"]');
+            if (isset($opa[0])) {
+                return $opa[0];
+            } else {
+                return $text;
+            }
+        }
     }
 
 }
